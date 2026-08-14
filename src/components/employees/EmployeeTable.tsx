@@ -11,8 +11,10 @@ interface EmployeeTableProps {
 
 const EmployeeTable: FC<EmployeeTableProps> = ({ employees, onSort, sortBy, sortOrder }) => {
   const getStatusColor = (status?: string) => {
-    if (status === 'Active') return 'bg-green-100 text-green-800';
-    if (status === 'Inactive') return 'bg-red-100 text-red-800';
+    // Default to Active if status is undefined
+    const currentStatus = status || 'Active';
+    if (currentStatus === 'Active') return 'bg-green-100 text-green-800';
+    if (currentStatus === 'Inactive') return 'bg-red-100 text-red-800';
     return 'bg-green-100 text-green-800';
   };
 
@@ -53,30 +55,33 @@ const EmployeeTable: FC<EmployeeTableProps> = ({ employees, onSort, sortBy, sort
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {employees.map((employee) => (
-            <tr key={employee.id} className="hover:bg-gray-50">
-              <td className="px-4 py-3 text-sm text-gray-900">{employee.id}</td>
-              <td className="px-4 py-3 text-sm text-gray-900">
-                {`${employee.firstName} ${employee.lastName}`}
-              </td>
-              <td className="px-4 py-3 text-sm text-gray-500">{employee.email}</td>
-              <td className="px-4 py-3 text-sm text-gray-500">{employee.company.department}</td>
-              <td className="px-4 py-3 text-sm text-gray-500">{employee.company.title}</td>
-              <td className="px-4 py-3">
-                <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(employee.status)}`}>
-                  {employee.status || 'Active'}
-                </span>
-              </td>
-              <td className="px-4 py-3 text-sm">
-                <Link
-                  href={`/employees/${employee.id}`}
-                  className="text-blue-600 hover:text-blue-800 hover:underline"
-                >
-                  View
-                </Link>
-              </td>
-            </tr>
-          ))}
+          {employees.map((employee) => {
+            const displayStatus = employee.status || 'Active';
+            return (
+              <tr key={employee.id} className="hover:bg-gray-50">
+                <td className="px-4 py-3 text-sm text-gray-900">{employee.id}</td>
+                <td className="px-4 py-3 text-sm text-gray-900">
+                  {`${employee.firstName} ${employee.lastName}`}
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-500">{employee.email}</td>
+                <td className="px-4 py-3 text-sm text-gray-500">{employee.company.department}</td>
+                <td className="px-4 py-3 text-sm text-gray-500">{employee.company.title}</td>
+                <td className="px-4 py-3">
+                  <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(displayStatus)}`}>
+                    {displayStatus}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-sm">
+                  <Link
+                    href={`/employees/${employee.id}`}
+                    className="text-blue-600 hover:text-blue-800 hover:underline"
+                  >
+                    View
+                  </Link>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

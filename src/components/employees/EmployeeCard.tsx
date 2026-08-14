@@ -8,7 +8,8 @@ interface EmployeeCardProps {
 
 const EmployeeCard: FC<EmployeeCardProps> = ({ employee }) => {
   const fullName = `${employee.firstName} ${employee.lastName}`;
-  const statusColor = employee.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+  const displayStatus = employee.status || 'Active';
+  const statusColor = displayStatus === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
 
   return (
     <Link href={`/employees/${employee.id}`}>
@@ -27,7 +28,7 @@ const EmployeeCard: FC<EmployeeCardProps> = ({ employee }) => {
         <div className="flex justify-between items-center text-sm">
           <span className="text-gray-600">{employee.company.department}</span>
           <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColor}`}>
-            {employee.status || 'Active'}
+            {displayStatus}
           </span>
         </div>
       </div>

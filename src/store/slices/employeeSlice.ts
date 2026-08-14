@@ -40,6 +40,12 @@ const employeeSlice = createSlice({
         employee.status = action.payload.status;
       }
     },
+    toggleEmployeeStatus: (state, action: PayloadAction<number>) => {
+      const employee = state.employees.find(e => e.id === action.payload);
+      if (employee) {
+        employee.status = employee.status === 'Active' ? 'Inactive' : 'Active';
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -59,5 +65,5 @@ const employeeSlice = createSlice({
   },
 });
 
-export const { addLocalEmployee, setEmployeeStatus } = employeeSlice.actions;
+export const { addLocalEmployee, setEmployeeStatus, toggleEmployeeStatus } = employeeSlice.actions;
 export default employeeSlice.reducer;
