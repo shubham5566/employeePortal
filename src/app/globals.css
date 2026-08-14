@@ -1,26 +1,57 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  body {
+    @apply bg-gray-50;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  /* Mobile-first responsive container */
+  .container-responsive {
+    @apply px-2 sm:px-4 md:px-6 lg:px-8 max-w-7xl mx-auto;
+  }
+  
+  /* Responsive table wrapper */
+  .table-responsive {
+    @apply overflow-x-auto -mx-2 sm:mx-0;
+  }
+  
+  /* Responsive card grid */
+  .card-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4;
+  }
+  
+  /* Responsive stats grid */
+  .stats-grid {
+    @apply grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4;
+  }
+  
+  /* Touch-friendly buttons */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+}
+
+/* Responsive breakpoints for better mobile experience */
+@media (max-width: 640px) {
+  .card-grid {
+    @apply grid-cols-1;
+  }
+  
+  .stats-grid {
+    @apply grid-cols-2;
+  }
+}
+
+/* Improve touch interactions on mobile */
+@media (hover: none) {
+  button, a {
+    @apply cursor-default;
+  }
+  
+  button:active, a:active {
+    @apply scale-[0.97] transition-transform;
+  }
 }
