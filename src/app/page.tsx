@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
@@ -9,14 +9,29 @@ import Button from '@/components/common/Button';
 
 export default function HomePage() {
   const router = useRouter();
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { isAuthenticated, loading } = useSelector((state: RootState) => state.auth);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted || loading) return;
+    
     // Redirect to dashboard if already authenticated
     if (isAuthenticated) {
       router.push('/employees');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, loading, router, isMounted]);
+
+  if (!isMounted || loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
@@ -40,40 +55,27 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Hero Title */}
         <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
           Employee Management <br />
           <span className="text-blue-600">Made Simple</span>
         </h1>
 
-        {/* Description */}
         <p className="text-lg text-gray-600 mb-8 max-w-lg mx-auto">
           Streamline your workforce management with our intuitive platform. 
           Manage employees, track performance, and grow your business.
         </p>
 
-        {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          {!isAuthenticated ? (
-            <>
-              <Link href="/login">
-                <Button size="lg" className="w-full sm:w-auto">
-                  Get Started
-                </Button>
-              </Link>
-              <Link href="/login">
-                <Button variant="secondary" size="lg" className="w-full sm:w-auto">
-                  Sign In
-                </Button>
-              </Link>
-            </>
-          ) : (
-            <Link href="/employees">
-              <Button size="lg" className="w-full sm:w-auto">
-                Go to Dashboard
-              </Button>
-            </Link>
-          )}
+          <Link href="/login">
+            <Button size="lg" className="w-full sm:w-auto">
+              Get Started
+            </Button>
+          </Link>
+          <Link href="/login">
+            <Button variant="secondary" size="lg" className="w-full sm:w-auto">
+              Sign In
+            </Button>
+          </Link>
         </div>
 
         {/* Features Section */}

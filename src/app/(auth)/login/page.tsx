@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { login } from '@/store/slices/authSlice';
+import { RootState } from '@/store/store';
 import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
 import Card from '@/components/common/Card';
@@ -26,6 +27,14 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
+  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/employees');
+    }
+  }, [isAuthenticated, router]);
 
   const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
     resolver: yupResolver(schema),
@@ -37,7 +46,7 @@ export default function LoginPage() {
 
     if (data.email === 'admin@test.com' && data.password === 'Admin@123') {
       dispatch(login({ email: data.email }));
-      router.push('/employees'); // Changed from '/dashboard' to '/employees'
+      router.push('/employees');
     } else {
       setError('Invalid email or password');
     }
