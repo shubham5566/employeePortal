@@ -12,6 +12,9 @@ import Input from '@/components/common/Input';
 import Button from '@/components/common/Button';
 import Card from '@/components/common/Card';
 
+import { showToast } from '@/utils/toast';
+
+
 interface LoginFormData {
   email: string;
   password: string;
@@ -43,12 +46,17 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     setLoading(true);
     setError('');
+    
 
     if (data.email === 'admin@test.com' && data.password === 'Admin@123') {
       dispatch(login({ email: data.email }));
+      showToast.success('Login successful! Welcome back! 🎉');
       router.push('/employees');
+
     } else {
       setError('Invalid email or password');
+            showToast.error('Invalid credentials. Please try again.');
+
     }
     setLoading(false);
   };

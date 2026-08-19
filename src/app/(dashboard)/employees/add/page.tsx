@@ -9,6 +9,9 @@ import Card from '@/components/common/Card';
 import Button from '@/components/common/Button';
 import { EmployeeFormData } from '@/types';
 
+import { showToast } from '@/utils/toast';
+
+
 export default function AddEmployeePage() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -78,6 +81,9 @@ export default function AddEmployeePage() {
 
     dispatch(addLocalEmployee(newEmployee));
     setLoading(false);
+        
+    showToast.success(`✅ Employee ${data.firstName} ${data.lastName} added successfully!`);
+
     router.push('/employees');
   };
 

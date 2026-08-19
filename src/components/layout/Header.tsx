@@ -6,6 +6,9 @@ import { RootState } from '@/store/store';
 import { logout } from '@/store/slices/authSlice';
 import Button from '../common/Button';
 
+import { showToast } from '@/utils/toast';
+
+
 const Header: FC = () => {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -13,6 +16,8 @@ const Header: FC = () => {
 
   const handleLogout = () => {
     dispatch(logout());
+        showToast.info('👋 Logged out successfully');
+
     router.push('/login');
   };
 

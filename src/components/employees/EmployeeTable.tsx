@@ -1,6 +1,9 @@
 import { FC, useState } from 'react';
 import Link from 'next/link';
 import { User } from '@/types';
+import { useDispatch } from 'react-redux';
+import { toggleEmployeeStatus } from '@/store/slices/employeeSlice';
+import { showToast } from '@/utils/toast';
 
 interface EmployeeTableProps {
   employees: User[];
@@ -10,6 +13,11 @@ interface EmployeeTableProps {
 }
 
 const EmployeeTable: FC<EmployeeTableProps> = ({ employees, onSort, sortBy, sortOrder }) => {
+
+    const dispatch = useDispatch();
+  const [updating, setUpdating] = useState<number | null>(null);
+
+
   const getStatusColor = (status?: string) => {
     // Default to Active if status is undefined
     const currentStatus = status || 'Active';
@@ -17,6 +25,20 @@ const EmployeeTable: FC<EmployeeTableProps> = ({ employees, onSort, sortBy, sort
     if (currentStatus === 'Inactive') return 'bg-red-100 text-red-800';
     return 'bg-green-100 text-green-800';
   };
+    const handleToggleStatus = (id: number, currentStatus: string) => {
+    setUpdating(id);
+    try {
+      dispatch(toggleEmployeeStatus(id));
+      const newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
+      showToast.success(`✅ Employee status updated to ${newStatus}`);
+    } catch (error) {
+      showToast.error('❌ Failed to update employee status');
+    } finally {
+      setUpdating(null);
+    }
+  };
+
+
 
   const SortIcon = ({ field }: { field: string }) => {
     if (sortBy !== field) return <span className="ml-1 text-gray-300">↕</span>;
@@ -67,9 +89,16 @@ const EmployeeTable: FC<EmployeeTableProps> = ({ employees, onSort, sortBy, sort
                 <td className="px-4 py-3 text-sm text-gray-500">{employee.company.department}</td>
                 <td className="px-4 py-3 text-sm text-gray-500">{employee.company.title}</td>
                 <td className="px-4 py-3">
-                  <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(displayStatus)}`}>
-                    {displayStatus}
-                  </span>
+                                    <button
+                    onClick={() => handleToggleStatus(employee.id, displayStatus)}
+                    disabled={updating === employee.id}
+                    className={`px-2 py-1 text-xs rounded-full cursor-pointer transition-colors ${
+                      getStatusColor(displayStatus)
+                    } ${updating === employee.id ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80'}`}
+                  >
+                    {updating === employee.id ? 'Updating...' : displayStatus}
+                  </button>
+
                 </td>
                 <td className="px-4 py-3 text-sm">
                   <Link
